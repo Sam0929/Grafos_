@@ -45,6 +45,7 @@ for i, lista in enumerate (MATRIZ):
             positions['triangle'].append((i,j))
 
 positions_square = {}
+next_square = []
 
 for circle in positions['circle']:
 
@@ -64,13 +65,13 @@ for circle in positions['circle']:
             closest_squares.append(square)
 
     positions_square[circle] = closest_squares
+    next_square += closest_squares
 
 print(f"Essas são as posições dos quadrados:", positions_square)
 
-
 positions_triangle = {}
-
-for square in positions['square']:
+next_triangle = []
+for square in next_square:
 
     dist_from_triangle = float("inf")  
     closest_triangles = []
@@ -94,12 +95,13 @@ for square in positions['square']:
                     closest_triangles.append(triangle)
 
     positions_triangle[square] = closest_triangles
+    next_triangle += closest_triangles
 
 print(f"Essas são as posições dos triângulos:", positions_triangle)
 
 positions_final = {}
 
-for triangle in positions['triangle']:
+for triangle in next_triangle:
     
     dist_from_square = float("inf")
     closest_squares = []
@@ -108,7 +110,7 @@ for triangle in positions['triangle']:
 
         dist = abs(square[0] - triangle[0])  + abs(square[1] - triangle[1])
 
-        if triangle[0] != square[0] and triangle[1]!= square[1]:
+        if ((triangle[0] + triangle [1] - square[0] + square[1]) % 2 == 0):
 
             if dist < dist_from_square:
 
