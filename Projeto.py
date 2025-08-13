@@ -27,10 +27,6 @@ MATRIZ = [  #Assumir 1=Círculo, 2=Quadrado, 3=Triangulo, 4=Estrela
     [2,3,1,1,2,3]
 ]
 
-positions = {123}
-
-print(type(positions))
-
 positions = {'circle': [], 'square': [], 'triangle': []}
 
 for i, lista in enumerate (MATRIZ):
@@ -43,6 +39,30 @@ for i, lista in enumerate (MATRIZ):
         
         elif(num == 3):
             positions['triangle'].append((i,j))
+
+pos_nodes = {}
+count = 0
+print(len(MATRIZ[0]))
+for i in range(len(MATRIZ)):
+    for j in range(len(MATRIZ[0])):
+        pos_nodes[(i,j)] = count
+        count += 1
+
+print(pos_nodes)
+
+
+rotated_pos_nodes = {}
+num_rows = len(MATRIZ)
+num_cols = len(MATRIZ[0])
+
+for (i,j), value in pos_nodes.items():
+    rotated_pos_nodes[value] = (j, num_rows - 1 - i)
+
+G = nx.DiGraph()
+G.add_nodes_from(pos_nodes.values())
+
+print(type(pos_nodes))
+print ('Aqui sao os valores',pos_nodes.values())
 
 positions_square = {}
 next_square = []
@@ -125,5 +145,28 @@ for triangle in next_triangle:
 
 print(f"Essas são as posições dos quadrados depois dos triangulos:", positions_final)
 
+
+for key, value_list in positions_square.items():
+    for value in value_list:
+        G.add_edge(pos_nodes[key], pos_nodes[value], color = 'green')
+
+for key, value_list in positions_triangle.items():
+    for value in value_list:
+        G.add_edge(pos_nodes[key], pos_nodes[value], color = 'black')
+
+for key, value_list in positions_final.items():
+    for value in value_list:
+        G.add_edge(pos_nodes[key], pos_nodes[value], color = 'blue')
+
+edge_colors = [G[u][v]['color'] for u, v in G.edges()]
+#definir tipos dos nos para poder especificar suas formas
+# nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, node_shape = '^')
+
+nx.draw(G,pos = rotated_pos_nodes, with_labels=True, edge_color = edge_colors, arrows = True)
+
+plt.show()
+
+
+
 # |x1-x2| + |y1-y2| 
-# #distancia de manhattan
+# #distancia de manhatta
