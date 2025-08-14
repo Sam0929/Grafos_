@@ -145,24 +145,59 @@ for triangle in next_triangle:
 
 print(f"Essas são as posições dos quadrados depois dos triangulos:", positions_final)
 
-
+circle_to_square_edge_list = []
 for key, value_list in positions_square.items():
     for value in value_list:
-        G.add_edge(pos_nodes[key], pos_nodes[value], color = 'green')
+        edge = (pos_nodes[key], pos_nodes[value])
+        G.add_edge(*edge, color='green')
+        circle_to_square_edge_list.append(edge)
 
+square_to_triangle_edge_list = []
 for key, value_list in positions_triangle.items():
     for value in value_list:
-        G.add_edge(pos_nodes[key], pos_nodes[value], color = 'black')
+        edge = (pos_nodes[key], pos_nodes[value])
+        G.add_edge(*edge, color='black')
+        square_to_triangle_edge_list.append(edge)
 
+triangle_to_square_edge_list = []
 for key, value_list in positions_final.items():
     for value in value_list:
-        G.add_edge(pos_nodes[key], pos_nodes[value], color = 'blue')
+        edge = (pos_nodes[key], pos_nodes[value])
+        G.add_edge(*edge, color='blue')
+        triangle_to_square_edge_list.append(edge)
 
-edge_colors = [G[u][v]['color'] for u, v in G.edges()]
-#definir tipos dos nos para poder especificar suas formas
-# nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, node_shape = '^')
 
-nx.draw(G,pos = rotated_pos_nodes, with_labels=True, edge_color = edge_colors, arrows = True)
+print (circle_to_square_edge_list)
+print (square_to_triangle_edge_list)
+print (triangle_to_square_edge_list)
+
+
+circle_nodes = []
+square_nodes = []
+triangle_nodes = []
+star_node = next(iter(positions_final.values()))[0]  #qualquer valor da posicao final e valida
+
+count = 0
+for i in range(6):
+    for j in range (6):
+        if MATRIZ[i][j] == 1:
+            circle_nodes.append(count)
+        elif MATRIZ[i][j] == 2:
+            square_nodes.append(count)
+        elif MATRIZ[i][j] == 3:
+            triangle_nodes.append(count)
+        count += 1
+               
+
+nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, nodelist=circle_nodes, node_size=300, node_color="#12be20", node_shape='o')
+nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, nodelist=square_nodes, node_size=300, node_color="#000000", node_shape='s')
+nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, nodelist=triangle_nodes, node_size=300, node_color="#1e12be", node_shape='^')
+nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, nodelist=[pos_nodes[star_node]], node_size=300, node_color='gold', node_shape='*')
+
+nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=circle_to_square_edge_list, edge_color='green')
+nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=square_to_triangle_edge_list, edge_color='black')
+nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=triangle_to_square_edge_list, edge_color='blue', connectionstyle='arc3,rad=0.2')
+
 
 plt.show()
 
