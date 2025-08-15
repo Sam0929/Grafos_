@@ -14,10 +14,6 @@ numberToLetter = {1:'C',2:'Q',3:'T',4:'E'}
 # de chegada
 # aEm caso de empate escolham livre
 
-# G = nx.Graph()
-# nx.draw(G, with_labels=True)
-# plt.show()
-# print("estou aqui")
 MATRIZ = [  #Assumir 1=Círculo, 2=Quadrado, 3=Triangulo, 4=Estrela
     [2,3,1,3,1,2],
     [3,3,2,1,2,3],
@@ -26,6 +22,8 @@ MATRIZ = [  #Assumir 1=Círculo, 2=Quadrado, 3=Triangulo, 4=Estrela
     [1,2,3,2,3,1],
     [2,3,1,1,2,3]
 ]
+
+#DICIONARIO DE POSICOES, CONTEM OS NOMES (C,S,T) COMO CHAVE E AS POSICOES CORRESPONDENTES EM UMA LISTA
 
 positions = {'circle': [], 'square': [], 'triangle': []}
 
@@ -40,7 +38,9 @@ for i, lista in enumerate (MATRIZ):
         elif(num == 3):
             positions['triangle'].append((i,j))
 
-pos_nodes = {}
+#DICIONARIO PARA TRADUZIR POSICAO EM NODE
+
+pos_nodes = {}                      
 count = 0
 print(len(MATRIZ[0]))
 for i in range(len(MATRIZ)):
@@ -48,21 +48,17 @@ for i in range(len(MATRIZ)):
         pos_nodes[(i,j)] = count
         count += 1
 
-print(pos_nodes)
 
+#CRIANDO UM DICIONARIO PARA ROTACIONAR AS POSICOES E EXIBIR O GRAFO COMO NO DESAFIO
 
 rotated_pos_nodes = {}
+
 num_rows = len(MATRIZ)
-num_cols = len(MATRIZ[0])
 
 for (i,j), value in pos_nodes.items():
     rotated_pos_nodes[value] = (j, num_rows - 1 - i)
 
-G = nx.DiGraph()
-G.add_nodes_from(pos_nodes.values())
-
-print(type(pos_nodes))
-print ('Aqui sao os valores',pos_nodes.values())
+#INICIO DOS CALCULOS PARA SEGUIR A LOGICA DO DESAFIO
 
 positions_square = {}
 next_square = []
@@ -145,6 +141,14 @@ for triangle in next_triangle:
 
 print(f"Essas são as posições dos quadrados depois dos triangulos:", positions_final)
 
+
+#CRIANDO O DIGRAFO E ADICIONANDO OS NOS
+
+G = nx.DiGraph()                                
+G.add_nodes_from(pos_nodes.values())
+
+#ADICIONANDO AS ARESTAS EM LISTAS PARA O DESENHO
+
 circle_to_square_edge_list = []
 for key, value_list in positions_square.items():
     for value in value_list:
@@ -167,10 +171,7 @@ for key, value_list in positions_final.items():
         triangle_to_square_edge_list.append(edge)
 
 
-print (circle_to_square_edge_list)
-print (square_to_triangle_edge_list)
-print (triangle_to_square_edge_list)
-
+#LISTAS PARA QUE CONTEM OS NOS DE CADA FORMA, NECESSARIO PARA DESENHAR
 
 circle_nodes = []
 square_nodes = []
@@ -178,6 +179,7 @@ triangle_nodes = []
 star_node = next(iter(positions_final.values()))[0]  #qualquer valor da posicao final e valida
 
 count = 0
+
 for i in range(6):
     for j in range (6):
         if MATRIZ[i][j] == 1:
@@ -187,17 +189,21 @@ for i in range(6):
         elif MATRIZ[i][j] == 3:
             triangle_nodes.append(count)
         count += 1
-               
+
+# DESENHANDO OS NOS
 
 nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, nodelist=circle_nodes, node_size=300, node_color="#12be20", node_shape='o')
 nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, nodelist=square_nodes, node_size=300, node_color="#000000", node_shape='s')
 nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, nodelist=triangle_nodes, node_size=300, node_color="#1e12be", node_shape='^')
 nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, nodelist=[pos_nodes[star_node]], node_size=300, node_color='gold', node_shape='*')
 
+# DESENHANDO AS ARESTAS
+
 nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=circle_to_square_edge_list, edge_color='green')
 nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=square_to_triangle_edge_list, edge_color='black')
 nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=triangle_to_square_edge_list, edge_color='blue', connectionstyle='arc3,rad=0.2')
 
+# EXIBINDO O GRAFO
 
 plt.show()
 
