@@ -90,6 +90,7 @@ for circle in positions['circle']:
 
 positions_triangle = {}
 next_triangle = []
+
 for square in next_square:
 
     dist_from_triangle = float("inf")  
