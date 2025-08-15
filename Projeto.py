@@ -186,8 +186,8 @@ star_node = next(iter(positions_final.values()))[0]  #QUALQUER VALOR DA POS FINA
 
 count = 0
 
-for i in range(6):
-    for j in range (6):
+for i in range(len(MATRIZ)):
+    for j in range (len(MATRIZ[0])):
         if MATRIZ[i][j] == 1:
             circle_nodes.append(count)
         elif MATRIZ[i][j] == 2:
