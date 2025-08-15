@@ -1,18 +1,15 @@
+"""
+Programa para resolver um desafio relacionado a grafos em Python.
+
+Autores: Samuel, Gabriel, Enzo, Guilherme
+Data: 15/08/2025
+
+"""
+
 import networkx as nx
 import matplotlib.pyplot as plt
 import math
 import numpy as np
-numberToLetter = {1:'C',2:'Q',3:'T',4:'E'}
-# Sigam os seguintes passosa
-# :
-# 1 Escolher 1 qualquer
-# 2 Ir para o 2 mais próximo
-# 3 Ir para o 3 mais próximo,apenas à direita ou abaixo do quadrado
-# 4 Ir para o 2 mais próximo,
-# apenas diagonais
-# 5 Perguntar ao colega do lado o ponto
-# de chegada
-# aEm caso de empate escolham livre
 
 MATRIZ = [  #Assumir 1=Círculo, 2=Quadrado, 3=Triangulo, 4=Estrela
     [2,3,1,3,1,2],
@@ -37,6 +34,18 @@ MATRIZ2 = [  #Assumir 1=Círculo, 2=Quadrado, 3=Triangulo, 4=Estrela
     [2,3,1,1,2,3,2,1,1]
 ]
 MATRIZ = MATRIZ2
+
+#FUNCOES 
+
+def draw_edges (edge_list, color):
+
+    for edge in edge_list:
+
+        weight = G[edge[0]][edge[1]]['weight']
+        if weight > 1:
+            nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=[edge], edge_color=color, connectionstyle=f'arc3,rad={weight /10:.2f}')
+        else:
+            nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=[edge], edge_color=color)
 
 #DICIONARIO DE POSICOES, CONTEM OS NOMES (C,S,T) COMO CHAVE E AS POSICOES CORRESPONDENTES EM UMA LISTA
 
@@ -71,12 +80,12 @@ num_rows = len(MATRIZ)
 for (i,j), value in pos_nodes.items():
     rotated_pos_nodes[value] = (j, num_rows - 1 - i)
 
-#ADICIONANDO AS ARESTAS E CRIANDO LISTAS PARA O DESENHO CORRETO
-
 #CRIANDO O DIGRAFO E ADICIONANDO OS NOS
 
 G = nx.DiGraph()                                
 G.add_nodes_from(pos_nodes.values())
+
+#LISTAS PARA ADICIONAR AS ARESTAS
 
 circle_to_square_edge_list = []
 
@@ -152,7 +161,7 @@ for square in next_square:
 
     for triangle in closest_triangles:
         edge = (pos_nodes[square], pos_nodes[triangle])
-        G.add_edge(*edge, color='green', weight = dist_from_triangle)
+        G.add_edge(*edge, color='black', weight = dist_from_triangle)
         square_to_triangle_edge_list.append(edge)
 
 # print(f"Essas são as posições dos triângulos:", positions_triangle) 
@@ -185,7 +194,7 @@ for triangle in next_triangle:
 
     for square in closest_squares:
         edge = (pos_nodes[triangle], pos_nodes[square])
-        G.add_edge(*edge, color='green', weight = dist_from_square)
+        G.add_edge(*edge, color='blue', weight = dist_from_square)
         triangle_to_square_edge_list.append(edge)
 
 # print(f"Essas são as posições dos quadrados depois dos triangulos:", positions_final) 
@@ -199,7 +208,7 @@ star_nodes = []
 
 for value_list in positions_final.values():
     for value in value_list:
-        star_nodes.append(pos_nodes[value]) #= next(iter(positions_final.values()))[0]  #QUALQUER VALOR DA POS FINAL E VALIDO
+        star_nodes.append(pos_nodes[value]) 
 
 count = 0
 
@@ -222,37 +231,16 @@ nx.draw_networkx_nodes(G, pos = rotated_pos_nodes, nodelist=star_nodes, node_siz
 
 # DESENHANDO AS ARESTAS
 
-for circle_to_square in circle_to_square_edge_list:
-    weight = G[circle_to_square[0]][circle_to_square[1]]['weight']
-    if weight > 1:
-        nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=[circle_to_square], edge_color='green', connectionstyle=f'arc3,rad={weight/10:.2f}')
-    else:
-        nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=[circle_to_square], edge_color='green')
-        
-for square_to_triangle in square_to_triangle_edge_list:
-    weight = G[square_to_triangle[0]][square_to_triangle[1]]['weight']
-    if weight > 1:
-        nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=[square_to_triangle], edge_color='black', connectionstyle=f'arc3,rad={weight/10:.2f}')
-    else:
-        nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=[square_to_triangle], edge_color='black')
-
-for triangle_to_square in triangle_to_square_edge_list:
-    weight = G[triangle_to_square[0]][triangle_to_square[1]]['weight']
-    if weight > 1:
-        nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=[triangle_to_square], edge_color='blue', connectionstyle=f'arc3,rad={weight/10:.2f}')
-    else:
-        nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=[triangle_to_square], edge_color='blue')
+draw_edges(circle_to_square_edge_list, 'green')
+draw_edges(square_to_triangle_edge_list, 'black')
+draw_edges(triangle_to_square_edge_list, 'blue')
 
 
-
-# nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=square_to_triangle_edge_list, edge_color='black', connectionstyle='arc3,rad=0.2')
-# nx.draw_networkx_edges(G, pos = rotated_pos_nodes, edgelist=triangle_to_square_edge_list, edge_color='blue', connectionstyle='arc3,rad=0.2')
 
 # EXIBINDO O GRAFO
 
+manager = plt.get_current_fig_manager()
+manager.window.state('zoomed')
+
 plt.show()
 
-
-
-# |x1-x2| + |y1-y2| 
-# #distancia de manhatta
