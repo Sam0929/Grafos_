@@ -42,7 +42,6 @@ for i, lista in enumerate (MATRIZ):
 
 pos_nodes = {}                      
 count = 0
-print(len(MATRIZ[0]))
 for i in range(len(MATRIZ)):
     for j in range(len(MATRIZ[0])):
         pos_nodes[(i,j)] = count
@@ -59,6 +58,8 @@ for (i,j), value in pos_nodes.items():
     rotated_pos_nodes[value] = (j, num_rows - 1 - i)
 
 #INICIO DOS CALCULOS PARA SEGUIR A LOGICA DO DESAFIO
+
+#CALCULANDO TODAS AS LIGACOES  CIRCULO -> QUADRADO
 
 positions_square = {}
 next_square = []
@@ -83,7 +84,9 @@ for circle in positions['circle']:
     positions_square[circle] = closest_squares
     next_square += closest_squares
 
-print(f"Essas são as posições dos quadrados:", positions_square)
+# print(f"Essas são as posições dos quadrados:", positions_square)
+
+#CALCULANDO TODAS AS LIGACOES QUADRADO -> TRIANGULO
 
 positions_triangle = {}
 next_triangle = []
@@ -113,7 +116,9 @@ for square in next_square:
     positions_triangle[square] = closest_triangles
     next_triangle += closest_triangles
 
-print(f"Essas são as posições dos triângulos:", positions_triangle)
+# print(f"Essas são as posições dos triângulos:", positions_triangle) 
+
+#CALCULANDO TODAS AS LIGACOES TRIANGULO -> QUADRADO_FINAL
 
 positions_final = {}
 
@@ -139,7 +144,7 @@ for triangle in next_triangle:
 
     positions_final[triangle] = closest_squares
 
-print(f"Essas são as posições dos quadrados depois dos triangulos:", positions_final)
+# print(f"Essas são as posições dos quadrados depois dos triangulos:", positions_final) 
 
 
 #CRIANDO O DIGRAFO E ADICIONANDO OS NOS
@@ -147,7 +152,7 @@ print(f"Essas são as posições dos quadrados depois dos triangulos:", position
 G = nx.DiGraph()                                
 G.add_nodes_from(pos_nodes.values())
 
-#ADICIONANDO AS ARESTAS EM LISTAS PARA O DESENHO
+#ADICIONANDO AS ARESTAS E CRIANDO LISTAS PARA O DESENHO CORRETO
 
 circle_to_square_edge_list = []
 for key, value_list in positions_square.items():
@@ -176,7 +181,7 @@ for key, value_list in positions_final.items():
 circle_nodes = []
 square_nodes = []
 triangle_nodes = []
-star_node = next(iter(positions_final.values()))[0]  #qualquer valor da posicao final e valida
+star_node = next(iter(positions_final.values()))[0]  #QUALQUER VALOR DA POS FINAL E VALIDO
 
 count = 0
 
